@@ -8,16 +8,32 @@ const routes: Array<RouteRecordRaw> = [
     redirect: '/home',
     name: 'Layout',
     component: Layout,
+    meta: { title: '内容', icon: 'el-icon-location' },
     children: [
       {
         path: '/home',
         name: 'Home',
-        component: Home
+        component: Home,
+        meta: { title: 'Home' }
       },
       {
         path: '/about',
         name: 'About',
-        component: () => import('@/views/About.vue')
+        component: () => import('@/views/About.vue'),
+        meta: { title: 'About' }
+
+      }
+    ]
+  },
+  {
+    path: '/table',
+    component: Layout,
+    meta: { title: 'Table', icon: 'el-icon-menu' },
+    children: [
+      {
+        path: '/table',
+        component: () => import('@/views/Table.vue'),
+        meta: { title: 'Table' }
       }
     ]
   }

@@ -1,50 +1,57 @@
 <template>
-  <el-scrollbar style="background-color:#001529 ">
-    <el-menu
-      default-active="1-4-1"
-      class="el-menu-vertical-demo"
-      @open="handleOpen"
-      @close="handleClose"
-      :collapse="open"
-      router
-      :collapse-transition="false"
-      background-color="#001529"
-      text-color="#fff"
-      active-text-color="#FFF">
-      <el-submenu index="1">
-        <template #title>
-          <i class="el-icon-location"></i>
-          <span>内容</span>
+  <div class="side-content">
+    <el-scrollbar style="background-color:#001529 ">
+      <el-menu
+        default-active="/home"
+        class="el-menu-vertical-demo"
+        @open="handleOpen"
+        @close="handleClose"
+        :collapse="open"
+        router
+        :collapse-transition="false"
+        background-color="#001529"
+        text-color="#fff"
+        active-text-color="#FFF">
+        <template v-for="(item, index) in routerList" :key="index">
+          <el-submenu v-if="item.children && item.children.length > 1" :index="index.toString()">
+            <template #title>
+              <i :class="item.meta.icon"></i>
+              <span>{{ item.meta.title }}</span>
+            </template>
+            <el-menu-item-group>
+              <el-menu-item v-for="menuItem in item.children" :key="menuItem.path" :index="menuItem.path">
+                {{ menuItem.meta.title }}
+              </el-menu-item>
+            </el-menu-item-group>
+          </el-submenu>
+          <el-menu-item v-else :index="item.path">
+            <i :class="item.meta.icon"></i>
+            <template #title>{{ item.meta.title }}</template>
+          </el-menu-item>
         </template>
-        <el-menu-item-group>
-          <el-menu-item index="/home">home</el-menu-item>
-          <el-menu-item index="/about">about</el-menu-item>
-        </el-menu-item-group>
-      </el-submenu>
-      <el-menu-item index="2">
-        <i class="el-icon-menu"></i>
-        <template #title>导航二</template>
-      </el-menu-item>
-      <el-menu-item index="3">
-        <i class="el-icon-document"></i>
-        <template #title>导航三</template>
-      </el-menu-item>
-      <el-menu-item index="4">
-        <i class="el-icon-setting"></i>
-        <template #title>导航四</template>
-      </el-menu-item>
-    </el-menu>
-  </el-scrollbar>
+      </el-menu>
+    </el-scrollbar>
+  </div>
 </template>
 
 <script lang="ts">
 import { Vue, Options } from 'vue-class-component'
 import { mapState } from 'vuex'
+import router from '../../router/index'
 
 @Options({
   data () {
     return {
-      logo: require('../../assets/logo.png')
+      logo: require('../../assets/logo.png'),
+      routerList: [],
+      openStyle: {
+        width: '200px',
+        transition: 'width 0.29s'
+      },
+      closeStyle: {
+        width: '65px',
+        transition: 'width 0.28s'
+      }
     }
   },
   computed: mapState({
@@ -52,6 +59,9 @@ import { mapState } from 'vuex'
       return state.aside.open
     }
   }),
+  created () {
+    this.routerList = router.options.routes
+  },
   methods: {
     handleOpen (key: string, keyPath: []) {
       console.log(key, keyPath)
@@ -70,9 +80,12 @@ export default class Aside extends Vue {
   height: 100%;
 }
 
+.side-content {
+  height: calc(100% - 53px);
+}
+
 .logo {
   height: 53px;
-  width: 100%;
   background-color: #001529;
   color: white;
   display: flex;
@@ -80,7 +93,12 @@ export default class Aside extends Vue {
 
   img {
     height: 43px;
-    padding-left: 20px;
+    padding-left: 10px;
+  }
+
+  span {
+    display: inline-block;
+    min-width: 50px;
   }
 }
 
